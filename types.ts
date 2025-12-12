@@ -14,6 +14,7 @@ export interface User {
   email: string;
   role: UserRole;
   allowedRoles: UserRole[];
+  status?: 'Active' | 'Suspended';
 }
 
 export interface Attraction {
