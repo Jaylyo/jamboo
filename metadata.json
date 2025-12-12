@@ -1,0 +1,7 @@
+{
+  "name": "CebuSafeTour Prototype",
+  "description": "A high-fidelity mobile web prototype for the CebuSafeTour application, featuring emergency response integration, tourist attraction browsing, and an AI-powered safety assistant.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
