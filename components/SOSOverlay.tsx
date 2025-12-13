@@ -4,7 +4,6 @@ import { useFacility } from '../contexts/FacilityContext';
 import { PersonalContact } from '../types';
 import { useIncident } from '../contexts/IncidentContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useCall } from '../contexts/CallContext';
 
 interface SOSOverlayProps {
   isOpen: boolean;
@@ -17,7 +16,6 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
   const { reportIncident } = useIncident();
   const { user } = useAuth();
   const { facilities } = useFacility();
-  const { initiateCall } = useCall();
 
   useEffect(() => {
     let timer: any;
@@ -46,11 +44,6 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
       onClose();
       // Optional: You might want to trigger a global toast here or let the user know success
       alert("Emergency Signal Broadcasted to Responders!");
-  };
-
-  const handleCallCommandCenter = () => {
-      initiateCall('ADMIN');
-      onClose();
   };
 
   if (!isOpen) return null;
@@ -107,9 +100,9 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
             <p className="text-sm font-medium text-red-200 uppercase tracking-widest text-left">Official Hotlines</p>
             
             {/* Command Center Hotline */}
-            <button 
-              onClick={handleCallCommandCenter}
-              className="w-full flex items-center justify-between bg-yellow-50 text-yellow-900 p-4 rounded-xl shadow-lg active:scale-95 transition-transform border-l-8 border-yellow-500 mb-3"
+            <a 
+              href="tel:0917-COMMAND"
+              className="flex items-center justify-between bg-yellow-50 text-yellow-900 p-4 rounded-xl shadow-lg active:scale-95 transition-transform border-l-8 border-yellow-500 mb-3"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-yellow-200 rounded-full">
@@ -120,8 +113,8 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
                   <div className="text-xs opacity-75">Staff & Admin Support</div>
                 </div>
               </div>
-              <span className="font-mono font-bold text-sm">CALL</span>
-            </button>
+              <span className="font-mono font-bold text-sm">CONNECT</span>
+            </a>
 
             {facilities.map((contact) => (
               <a 

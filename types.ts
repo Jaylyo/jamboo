@@ -1,4 +1,5 @@
 
+
 export enum AppTab {
   HOME = 'HOME',
   EXPLORE = 'EXPLORE',
@@ -53,6 +54,7 @@ export interface SafetyAlert {
   severity: 'low' | 'medium' | 'high' | 'critical';
   timestamp: string;
   details: string;
+  location?: string;
 }
 
 export interface Incident {
