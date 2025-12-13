@@ -7,7 +7,7 @@ import { Attraction } from '../types';
 import { useFacility } from '../contexts/FacilityContext';
 
 const StaffDashboard: React.FC = () => {
-  const { logout, user, switchRole } = useAuth();
+  const { logout, user } = useAuth();
   const { attractions, addAttraction, updateAttraction } = useAttraction();
   const { addAlert } = useAdvisory();
   const { facilities, addFacility, removeFacility } = useFacility();
@@ -128,9 +128,6 @@ const StaffDashboard: React.FC = () => {
           </h1>
           <p className="text-xs text-teal-100 opacity-80">Tourism Office</p>
         </div>
-        <button onClick={logout} className="p-2 bg-teal-700 rounded-full hover:bg-teal-800">
-          <LogOut className="w-4 h-4" />
-        </button>
       </header>
 
       {/* Tabs */}
@@ -448,35 +445,6 @@ const StaffDashboard: React.FC = () => {
             </div>
         )}
 
-        {activeTab === 'HISTORY' && (
-            <div className="space-y-4">
-                 <h2 className="font-bold text-gray-800 text-lg">Notification Log</h2>
-                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    {notificationLogs.map((log) => (
-                        <div key={log.id} className="p-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors">
-                            <div className="flex justify-between items-start mb-1">
-                                <div className="flex items-center gap-2">
-                                    <span className={`p-1.5 rounded-full ${
-                                        log.category === 'Safety Alert' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'
-                                    }`}>
-                                        {log.category === 'Safety Alert' ? <BellRing className="w-3 h-3" /> : <FileText className="w-3 h-3" />}
-                                    </span>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{log.category}</span>
-                                </div>
-                                <span className="text-xs font-mono text-gray-400">{log.sentAt}</span>
-                            </div>
-                            <h3 className="font-bold text-gray-800 text-sm ml-8">{log.title}</h3>
-                            <div className="ml-8 mt-2 flex items-center gap-2">
-                                <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded border border-gray-200">
-                                    Audience: {log.audience}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                 </div>
-            </div>
-        )}
-
         {activeTab === 'PROFILE' && (
             <div className="space-y-4">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
@@ -489,28 +457,6 @@ const StaffDashboard: React.FC = () => {
                         <div className="text-xs font-medium text-teal-600 mt-1">Tourism Office Staff</div>
                     </div>
                 </div>
-
-                {user?.allowedRoles && user.allowedRoles.length > 1 && (
-                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                        <h3 className="text-xs font-bold text-gray-500 uppercase mb-3">Switch Role</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {user.allowedRoles.map(role => (
-                                <button
-                                    key={role}
-                                    onClick={() => switchRole(role)}
-                                    disabled={role === user.role}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border ${
-                                        role === user.role 
-                                        ? 'bg-teal-600 border-teal-600 text-white' 
-                                        : 'bg-white border-gray-200 text-gray-600 hover:bg-teal-50 hover:text-teal-700'
-                                    }`}
-                                >
-                                    {role}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
 
                 <div className="space-y-2">
                     <button className="w-full flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:bg-gray-50">

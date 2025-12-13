@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, AlertTriangle, Activity, Settings, BarChart3, LogOut, Search, UserCheck, Shield, Plus, X, Bell, CheckCircle2, Clock, User as UserIcon, Filter, Radio, Building2, Trash2, Mail } from 'lucide-react';
+import { Users, AlertTriangle, Activity, Settings, BarChart3, LogOut, Search, UserCheck, Shield, Plus, X, Bell, CheckCircle2, Clock, User as UserIcon, Filter, Radio, Building2, Trash2, Mail, Phone, Globe, Calendar } from 'lucide-react';
 import { useAdvisory } from '../contexts/AdvisoryContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useIncident } from '../contexts/IncidentContext';
@@ -26,19 +26,44 @@ const AdminDashboard: React.FC = () => {
     name: '',
     email: '',
     role: 'STAFF',
-    status: 'Active'
+    status: 'Active',
+    phone: '',
+    nationality: '',
+    sex: '',
+    birthdate: ''
   });
 
   const handleCreateUser = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Calculate age if birthdate is present
+    let age;
+    if (newUserForm.birthdate) {
+        const birthDate = new Date(newUserForm.birthdate);
+        const today = new Date();
+        age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+    }
+
     addUser({
         name: newUserForm.name,
         email: newUserForm.email,
         role: newUserForm.role as UserRole,
-        status: newUserForm.status as 'Active' | 'Suspended'
+        status: newUserForm.status as 'Active' | 'Suspended',
+        phone: newUserForm.phone,
+        nationality: newUserForm.nationality,
+        sex: newUserForm.sex,
+        birthdate: newUserForm.birthdate,
+        age: age
     });
     setShowAddUser(false);
-    setNewUserForm({ name: '', email: '', role: 'STAFF', status: 'Active' });
+    setNewUserForm({ 
+        name: '', email: '', role: 'STAFF', status: 'Active', 
+        phone: '', nationality: '', sex: '', birthdate: '' 
+    });
     // Optional: Alert or Toast
   };
 
@@ -105,9 +130,6 @@ const AdminDashboard: React.FC = () => {
             <p className="text-xs text-slate-400">Welcome, {user?.name}</p>
           </div>
         </div>
-        <button onClick={logout} className="p-2 hover:bg-slate-700 rounded-full transition-colors">
-          <LogOut className="w-5 h-5 text-slate-400" />
-        </button>
       </header>
 
       {/* Nav */}
@@ -293,6 +315,12 @@ const AdminDashboard: React.FC = () => {
                                         <td className="p-3">
                                             <div className="font-bold text-white">{user.name}</div>
                                             <div className="text-xs text-slate-500">{user.email}</div>
+                                            {(user.phone || user.nationality) && (
+                                                <div className="text-[10px] text-slate-600 mt-1 flex gap-2">
+                                                    {user.phone && <span>{user.phone}</span>}
+                                                    {user.nationality && <span>• {user.nationality}</span>}
+                                                </div>
+                                            )}
                                         </td>
                                         <td className="p-3">
                                             <span className={`text-[10px] px-2 py-0.5 rounded border ${
@@ -355,7 +383,7 @@ const AdminDashboard: React.FC = () => {
                                                 <span className="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-700">
                                                     Location: {alert.location || 'General'}
                                                 </span>
-                                                <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                                                <span className="text-xs text-slate-500 flex items-center gap-1">
                                                     <Clock className="w-3 h-3" /> {alert.timestamp}
                                                 </span>
                                             </div>
@@ -579,7 +607,7 @@ const AdminDashboard: React.FC = () => {
       {/* Add User Modal */}
       {showAddUser && (
           <div className="absolute inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-slate-800 border border-slate-700 w-full rounded-2xl p-6 shadow-2xl animate-in zoom-in-95">
+              <div className="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
                   <div className="flex justify-between items-center mb-6">
                       <h2 className="text-lg font-bold">Create New User</h2>
                       <button onClick={() => setShowAddUser(false)} className="p-1 hover:bg-slate-700 rounded-full">
@@ -587,35 +615,99 @@ const AdminDashboard: React.FC = () => {
                       </button>
                   </div>
                   <form onSubmit={handleCreateUser} className="space-y-4">
-                      <div>
-                          <label className="text-xs font-bold text-slate-400 uppercase">Full Name</label>
-                          <div className="relative">
-                            <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                            <input 
-                                type="text" 
-                                className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
-                                value={newUserForm.name}
-                                onChange={e => setNewUserForm({...newUserForm, name: e.target.value})}
-                                placeholder="e.g. Officer Juan"
-                                required
-                            />
-                          </div>
-                      </div>
-                      <div>
-                          <label className="text-xs font-bold text-slate-400 uppercase">Email Address</label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                            <input 
-                                type="email" 
-                                className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
-                                value={newUserForm.email}
-                                onChange={e => setNewUserForm({...newUserForm, email: e.target.value})}
-                                placeholder="e.g. officer@cebu.gov"
-                                required
-                            />
-                          </div>
-                      </div>
                       <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase">Full Name</label>
+                            <div className="relative">
+                                <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input 
+                                    type="text" 
+                                    className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                                    value={newUserForm.name}
+                                    onChange={e => setNewUserForm({...newUserForm, name: e.target.value})}
+                                    placeholder="e.g. Officer Juan"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase">Email Address</label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input 
+                                    type="email" 
+                                    className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                                    value={newUserForm.email}
+                                    onChange={e => setNewUserForm({...newUserForm, email: e.target.value})}
+                                    placeholder="officer@cebu.gov"
+                                    required
+                                />
+                            </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                         <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase">Phone Number</label>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                                <input 
+                                    type="tel" 
+                                    className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                                    value={newUserForm.phone}
+                                    onChange={e => setNewUserForm({...newUserForm, phone: e.target.value})}
+                                    placeholder="+63 9..."
+                                    required
+                                />
+                            </div>
+                         </div>
+                         <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase">Nationality</label>
+                            <div className="relative">
+                                <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                                <select 
+                                    value={newUserForm.nationality}
+                                    onChange={e => setNewUserForm({...newUserForm, nationality: e.target.value})}
+                                    className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none"
+                                >
+                                    <option value="">Select</option>
+                                    <option value="Filipino">Filipino</option>
+                                    <option value="American">American</option>
+                                    <option value="South Korean">South Korean</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                         <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase">Sex</label>
+                            <select 
+                                value={newUserForm.sex}
+                                onChange={e => setNewUserForm({...newUserForm, sex: e.target.value})}
+                                className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            >
+                                <option value="">Select Sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                         </div>
+                         <div>
+                            <label className="text-xs font-bold text-slate-400 uppercase">Birthdate</label>
+                            <div className="relative">
+                                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                                <input 
+                                    type="date"
+                                    value={newUserForm.birthdate}
+                                    onChange={e => setNewUserForm({...newUserForm, birthdate: e.target.value})}
+                                    className="w-full mt-1 bg-slate-900 border border-slate-600 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-200"
+                                />
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-700 mt-2">
                            <div>
                               <label className="text-xs font-bold text-slate-400 uppercase">Role</label>
                               <select 

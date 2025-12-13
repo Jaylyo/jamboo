@@ -5,7 +5,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   allUsers: User[];
-  login: (email: string, name: string) => Promise<void>;
+  login: (email: string, name: string, phone?: string, nationality?: string, sex?: string, age?: number, birthdate?: string) => Promise<void>;
   logout: () => void;
   switchRole: (role: UserRole) => void;
   addUser: (user: Omit<User, 'id' | 'allowedRoles'>) => void;
@@ -15,8 +15,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Initial Mock Data for the application
 const INITIAL_USERS: User[] = [
-  { id: '1', name: 'Maria Santos', email: 'm.santos@email.com', role: 'RESPONDER', allowedRoles: ['RESPONDER'], status: 'Active' },
-  { id: '2', name: 'John Doe', email: 'tourist1@email.com', role: 'TOURIST', allowedRoles: ['TOURIST'], status: 'Active' },
+  { id: '1', name: 'Maria Santos', email: 'm.santos@email.com', role: 'RESPONDER', allowedRoles: ['RESPONDER'], status: 'Active', phone: '09171234567', nationality: 'Philippines', sex: 'Female', age: 28, birthdate: '1995-05-15' },
+  { id: '2', name: 'John Doe', email: 'tourist1@email.com', role: 'TOURIST', allowedRoles: ['TOURIST'], status: 'Active', phone: '09181234567', nationality: 'USA', sex: 'Male', age: 35, birthdate: '1988-11-22' },
   { id: '3', name: 'Staff User', email: 'staff@cebusafe.com', role: 'STAFF', allowedRoles: ['STAFF'], status: 'Active' },
   { id: '4', name: 'Jane Smith', email: 'jane.s@email.com', role: 'TOURIST', allowedRoles: ['TOURIST'], status: 'Suspended' },
   { id: '5', name: 'Admin User', email: 'admin@cebu.gov', role: 'ADMIN', allowedRoles: ['ADMIN', 'STAFF', 'RESPONDER', 'TOURIST'], status: 'Active' },
@@ -26,7 +26,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>(INITIAL_USERS);
 
-  const login = async (email: string, name: string) => {
+  const login = async (email: string, name: string, phone?: string, nationality?: string, sex?: string, age?: number, birthdate?: string) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -59,7 +59,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       email,
       role,
       allowedRoles,
-      status: 'Active'
+      status: 'Active',
+      phone,
+      nationality,
+      sex,
+      age,
+      birthdate
     };
 
     // Add new user to the global list and set as current user

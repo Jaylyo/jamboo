@@ -1,8 +1,8 @@
+
 export enum AppTab {
   HOME = 'HOME',
   EXPLORE = 'EXPLORE',
   MAP = 'MAP',
-  AI_GUIDE = 'AI_GUIDE',
   PROFILE = 'PROFILE'
 }
 
@@ -15,6 +15,11 @@ export interface User {
   role: UserRole;
   allowedRoles: UserRole[];
   status?: 'Active' | 'Suspended';
+  phone?: string;
+  nationality?: string;
+  sex?: string;
+  age?: number;
+  birthdate?: string;
 }
 
 export interface Attraction {
@@ -48,7 +53,6 @@ export interface SafetyAlert {
   severity: 'low' | 'medium' | 'high' | 'critical';
   timestamp: string;
   details: string;
-  location?: string;
 }
 
 export interface Incident {

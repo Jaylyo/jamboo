@@ -5,7 +5,7 @@ import { useIncident } from '../contexts/IncidentContext';
 import { Incident } from '../types';
 
 const ResponderDashboard: React.FC = () => {
-  const { logout, user, switchRole } = useAuth();
+  const { logout, user } = useAuth();
   const { incidents, resolveIncident, assignResponder } = useIncident();
   const [isOnline, setIsOnline] = useState(true);
   const [view, setView] = useState<'ACTIVE' | 'LOGS' | 'PROFILE'>('ACTIVE');
@@ -56,9 +56,6 @@ const ResponderDashboard: React.FC = () => {
           </h1>
           <p className="text-xs text-red-100 opacity-80">Officer: {user?.name}</p>
         </div>
-        <button onClick={logout} className="p-2 bg-red-800 rounded-full hover:bg-red-900">
-          <LogOut className="w-4 h-4" />
-        </button>
       </header>
 
       {/* Status Toggle & Nav */}
@@ -250,28 +247,6 @@ const ResponderDashboard: React.FC = () => {
                         EMS Unit: RES-09
                     </div>
                  </div>
-
-                 {user?.allowedRoles && user.allowedRoles.length > 1 && (
-                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                        <h3 className="text-xs font-bold text-gray-500 uppercase mb-3">Switch Role</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {user.allowedRoles.map(role => (
-                                <button
-                                    key={role}
-                                    onClick={() => switchRole(role)}
-                                    disabled={role === user.role}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border ${
-                                        role === user.role 
-                                        ? 'bg-red-600 border-red-600 text-white' 
-                                        : 'bg-white border-gray-200 text-gray-600 hover:bg-red-50 hover:text-red-700'
-                                    }`}
-                                >
-                                    {role}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
 
                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div className="p-4 border-b border-gray-50 flex items-center justify-between">

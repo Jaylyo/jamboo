@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, AlertTriangle, X, Radio, User } from 'lucide-react';
+import { Phone, AlertTriangle, X, Radio, User, Shield } from 'lucide-react';
 import { useFacility } from '../contexts/FacilityContext';
 import { PersonalContact } from '../types';
 import { useIncident } from '../contexts/IncidentContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useCall } from '../contexts/CallContext';
 
 interface SOSOverlayProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
   const { reportIncident } = useIncident();
   const { user } = useAuth();
   const { facilities } = useFacility();
+  const { initiateCall } = useCall();
 
   useEffect(() => {
     let timer: any;
@@ -46,6 +48,11 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
       alert("Emergency Signal Broadcasted to Responders!");
   };
 
+  const handleCallCommandCenter = () => {
+      initiateCall('ADMIN');
+      onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -61,7 +68,7 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
           <X className="w-6 h-6" />
         </button>
 
-        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 overflow-y-auto">
+        <div className="flex-1 flex flex-col items-center justify-center text-center space-y-6 overflow-y-auto scrollbar-hide">
           <div className="animate-pulse shrink-0 mt-8">
             <div className="w-24 h-24 rounded-full bg-white text-red-600 flex items-center justify-center shadow-2xl mb-4 mx-auto">
               <AlertTriangle className="w-12 h-12" />
@@ -98,6 +105,24 @@ const SOSOverlay: React.FC<SOSOverlayProps> = ({ isOpen, onClose, personalContac
             )}
 
             <p className="text-sm font-medium text-red-200 uppercase tracking-widest text-left">Official Hotlines</p>
+            
+            {/* Command Center Hotline */}
+            <button 
+              onClick={handleCallCommandCenter}
+              className="w-full flex items-center justify-between bg-yellow-50 text-yellow-900 p-4 rounded-xl shadow-lg active:scale-95 transition-transform border-l-8 border-yellow-500 mb-3"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-yellow-200 rounded-full">
+                  <Shield className="w-5 h-5 text-yellow-800" />
+                </div>
+                <div className="text-left">
+                  <div className="font-bold">Command Center</div>
+                  <div className="text-xs opacity-75">Staff & Admin Support</div>
+                </div>
+              </div>
+              <span className="font-mono font-bold text-sm">CALL</span>
+            </button>
+
             {facilities.map((contact) => (
               <a 
                 key={contact.id}
